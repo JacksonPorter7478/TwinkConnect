@@ -1,5 +1,4 @@
 import { useRef } from "react";
-import ReCAPTCHA from "react-google-recaptcha";
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -53,13 +52,6 @@ const ForgotPasswordForm = () => {
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={isSmallScreen ? 0 : 3}>
         <RHFTextField name="email" label="Email address" />
-
-        <ReCAPTCHA
-          ref={recaptchaRef}
-          size="invisible"
-          sitekey={process.env.REACT_APP_RECAPTCHA_CLIENT}
-          theme="dark"
-        />
 
         <LoadingButton
           loading={isLoading}

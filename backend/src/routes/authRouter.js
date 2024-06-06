@@ -6,17 +6,16 @@ import {
   verifyOTP,
   refreshToken,
   login,
+  join,
   logout,
   forgotPassword,
   resetPassword,
 } from "../controllers/authController.js";
-import {
-  githubAuth,
-  googleAuth,
-  linkedinAuth,
-} from "../controllers/socialController.js";
 
 const authRouter = express.Router();
+
+// Join Route
+authRouter.route("/join").post(trimRequest.all, join);
 
 // Login Route
 authRouter.route("/login").post(trimRequest.all, login);
@@ -41,16 +40,5 @@ authRouter.route("/reset-password").post(trimRequest.all, resetPassword);
 
 // Refresh Token Route
 authRouter.route("/refresh-token").post(trimRequest.all, refreshToken);
-
-// ------------- Social Auth -------------
-
-// Google Auth Route
-authRouter.route("/google").post(googleAuth);
-
-// GitHub Auth Route
-authRouter.route("/github").post(githubAuth);
-
-// LinkedIn Auth Route
-authRouter.route("/linkedin").post(linkedinAuth);
 
 export default authRouter;

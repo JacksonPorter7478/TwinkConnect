@@ -1,5 +1,4 @@
 import { useRef, useState } from "react";
-import ReCAPTCHA from "react-google-recaptcha";
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -110,13 +109,6 @@ const RegisterForm = () => {
               </InputAdornment>
             ),
           }}
-        />
-
-        <ReCAPTCHA
-          ref={recaptchaRef}
-          size="invisible"
-          sitekey={process.env.REACT_APP_RECAPTCHA_CLIENT}
-          theme="dark"
         />
 
         <LoadingButton

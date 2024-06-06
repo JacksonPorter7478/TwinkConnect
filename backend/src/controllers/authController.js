@@ -13,6 +13,63 @@ import reset from "../Templates/Mail/reset.js";
 import { generateLoginTokens } from "../services/authService.js";
 import { verifyreCAPTCHA } from "../services/authService.js";
 
+export const join = async (req, res, next) => {
+  try {
+    const { success } = req.body;
+    console.log(success);
+
+    function generateRandomUsername() {
+      const randomNum = Math.floor(Math.random() * 1000000); // Generate a random number between 0 and 999999
+      return `guest${randomNum}`;
+    }
+    
+    const username = generateRandomUsername();
+    console.log(username); // Output: guest123874 (example)
+    
+
+    const user = await UserModel.findOne({ username: username });
+
+    // check for user and password
+    // if (!user || !user.password) {
+    //   throw createHttpError.NotFound("Incorrect Email or Password");
+    // }
+
+    // // check if user is present in DB and password is correct
+    // if (!user || !(await user.correctPassword(password, user.password))) {
+    //   throw createHttpError.NotFound("Incorrect Email or Password");
+    // }
+
+    // check if user is verified
+    // if (!user.verified) {
+    //   res.status(200).json({
+    //     status: "info",
+    //     message: `Hello ${user.firstName}, please verify to login`,
+    //   });
+    //   return;
+    // }
+
+    // generating login tokens
+    // const access_token = await generateLoginTokens(user, res);
+
+    // return res.status(200).json({
+    //   status: "success",
+    //   message: "Logged in successfully",
+    //   user: {
+    //     _id: user._id,
+    //     firstName: user.firstName,
+    //     lastName: user.lastName,
+    //     avatar: user.avatar,
+    //     email: user.email,
+    //     activityStatus: user.activityStatus,
+    //     onlineStatus: user.onlineStatus,
+    //     token: access_token,
+    //   },
+    // });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // -------------------------- Login auth --------------------------
 export const login = async (req, res, next) => {
   try {

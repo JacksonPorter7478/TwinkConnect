@@ -7,6 +7,47 @@ import { updateOtpEmail } from "../authSlice";
 import { clearChat } from "../chatSlice";
 import { socket } from "../../../utils/socket";
 
+// ------------- Join Thunk -------------
+export const JoinUser = createAsyncThunk(
+  "auth/join",
+  async ({ ...formValues }, { rejectWithValue, dispatch }) => {
+    try {
+      console.log({ ...formValues });
+      const { data } = await axios.post("/auth/join", {
+        ...formValues,
+      });
+
+      // show snackbar
+      dispatch(
+        ShowSnackbar({
+          severity: data.status,
+          message: data.message,
+        })
+      );
+
+      // if user is not verified
+      if (!data.user) {
+        dispatch(updateOtpEmail({ otpEmail: formValues.email }));
+        setTimeout(() => {
+          window.location.href = "/auth/verify";
+        }, 1000);
+      } else {
+        // update user data
+        dispatch(updateUser(data.user));
+      }
+
+      return data;
+    } catch (error) {
+      dispatch(
+        ShowSnackbar({
+          severity: error.error.status,
+          message: error.error.message,
+        })
+      );
+      return rejectWithValue(error.error);
+    }
+  }
+);
 // ------------- Login Thunk -------------
 export const LoginUser = createAsyncThunk(
   "auth/login",

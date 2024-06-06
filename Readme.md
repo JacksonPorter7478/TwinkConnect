@@ -559,7 +559,7 @@ $ npm run build
 <br/>
 
 <div align="center">
-<img src="https://komarev.com/ghpvc/?username=itsvaibhavmishra&&style=for-the-badge" align="center" />
+<img src="https://komarev.com/ghpvc/?username=smileysunshinesky&&style=for-the-badge" align="center" />
 </div>
 
 <br/>

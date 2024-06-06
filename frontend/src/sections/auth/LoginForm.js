@@ -1,5 +1,4 @@
 import { useRef, useState } from "react";
-import ReCAPTCHA from "react-google-recaptcha";
 import { Link as RouterLink } from "react-router-dom";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -100,13 +99,6 @@ const LoginForm = () => {
           Forgot Password?
         </Link>
       </Stack>
-
-      <ReCAPTCHA
-        ref={recaptchaRef}
-        size="invisible"
-        sitekey={process.env.REACT_APP_RECAPTCHA_CLIENT}
-        theme="dark"
-      />
 
       <LoadingButton
         loading={isLoading}

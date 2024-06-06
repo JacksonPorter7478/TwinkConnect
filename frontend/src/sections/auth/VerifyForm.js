@@ -1,5 +1,4 @@
 import { useRef } from "react";
-import ReCAPTCHA from "react-google-recaptcha";
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -191,13 +190,6 @@ const VerifyForm = () => {
           disabled={!otpEmail}
           keyName="otp"
           inputs={["otp1", "otp2", "otp3", "otp4", "otp5", "otp6"]}
-        />
-
-        <ReCAPTCHA
-          ref={recaptchaRef}
-          size="invisible"
-          sitekey={process.env.REACT_APP_RECAPTCHA_CLIENT}
-          theme="dark"
         />
 
         <LoadingButton
