@@ -25,8 +25,8 @@ const initialState = {
     _id: "",
     firstName: "",
     lastName: "",
+    username: "",
     avatar: "",
-    email: "",
     activityStatus: "",
     token: "",
   },
@@ -60,11 +60,12 @@ const slice = createSlice({
     updateUser: (state, action) => {
       state.user = { ...state.user, ...action.payload };
       axios.defaults.headers.common.Authorization = `Bearer ${action.payload.token}`;
+      console.log("updated user: ", state.user);
     },
 
     // update online users
     updateOnlineUsers: (state, action) => {
-      const { _id, firstName, lastName, avatar, onlineStatus } = action.payload;
+      const { _id, firstName, lastName, username, avatar, onlineStatus } = action.payload;
       const index = state.onlineFriends.findIndex(
         (friend) => friend._id === _id
       );
@@ -78,6 +79,7 @@ const slice = createSlice({
           _id,
           firstName,
           lastName,
+          username,
           avatar,
           onlineStatus,
         });
@@ -117,8 +119,8 @@ const slice = createSlice({
         _id: "",
         firstName: "",
         lastName: "",
+        username: "",
         avatar: "",
-        email: "",
         activityStatus: "",
         token: "",
       };

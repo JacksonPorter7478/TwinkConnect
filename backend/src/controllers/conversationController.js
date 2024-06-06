@@ -1,6 +1,8 @@
 import createHttpError from "http-errors";
 
-import { UserModel } from "../models/index.js";
+// import { UserModel } from "../models/index.js";
+import User from "../models/userModel.js";
+
 import {
   createConversation,
   findConversation,
@@ -21,7 +23,7 @@ export const createOpenConversation = async (req, res, next) => {
     }
 
     // check if receiver exists
-    const receiver = await UserModel.findOne({
+    const receiver = await User.findOne({
       _id: receiver_id,
       verified: true,
     });
@@ -91,7 +93,8 @@ export const createOpenConversation = async (req, res, next) => {
 export const getConversations = async (req, res, next) => {
   try {
     const user_id = req.user._id;
-
+    console.log(user_id);
+    
     const conversations = await getUserConversations(user_id);
 
     res.status(200).json({ status: "success", conversations: conversations });

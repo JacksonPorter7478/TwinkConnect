@@ -43,6 +43,8 @@ axios.interceptors.response.use(
         // Dispatch the updateUser action with the new user data
         await dispatch(updateUser(user));
         // Resend the original request with the new token
+
+        console.log(originalRequest);
         return axios(originalRequest);
       } catch (refreshError) {
         // If refresh token fails, logout user

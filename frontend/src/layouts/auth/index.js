@@ -41,7 +41,9 @@ const AuthLayout = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  console.log(isLoggedIn)
   if (isLoggedIn) {
+    console.log("sesdf")
     return <Navigate to={"/"} />;
   }
 

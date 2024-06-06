@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken";
 import { promisify } from "util";
-import { UserModel } from "../models/index.js";
+// import { UserModel } from "../models/index.js";
+import User from "../models/userModel.js";
+
 import createHttpError from "http-errors";
 
 export const socketMiddleware = async (socket, next) => {
@@ -24,7 +26,7 @@ export const socketMiddleware = async (socket, next) => {
       }
 
       // check for existing user with the same token
-      const this_user = await UserModel.findOne({
+      const this_user = await User.findOne({
         _id: decoded.userId,
         verified: true,
       });

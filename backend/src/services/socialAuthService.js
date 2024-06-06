@@ -1,6 +1,7 @@
 import createHttpError from "http-errors";
 
-import { UserModel } from "../models/index.js";
+import User from "../models/userModel.js";
+// import { UserModel } from "../models/index.js";
 import { generatePassword } from "../utils/generatePassword.js";
 import { generateLoginTokens } from "./authService.js";
 
@@ -9,8 +10,8 @@ const userData = (user, access_token) => {
     _id: user._id,
     firstName: user.firstName,
     lastName: user.lastName,
+    username: user.username,
     avatar: user.avatar,
-    email: user.email,
     activityStatus: user.activityStatus,
     onlineStatus: user.onlineStatus,
     token: access_token,
@@ -18,13 +19,13 @@ const userData = (user, access_token) => {
 };
 
 export const handleSocialUser = async (
-  email,
+  username,
   name,
   picture,
   socialType,
   res
 ) => {
-  let user = await UserModel.findOne({ email }).select("-password");
+  let user = await User.findOne({ username }).select("-password");
 
   if (user) {
     user.verified = true;
@@ -59,7 +60,7 @@ export const handleSocialUser = async (
     user = new UserModel({
       firstName: firstName,
       lastName: lastName,
-      email: email,
+      username: username,
       avatar: picture,
       verified: true,
       googleAuthAdded: true,

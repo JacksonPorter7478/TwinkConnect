@@ -1,6 +1,8 @@
 import createHttpError from "http-errors";
 
-import { FriendRequestModel, UserModel } from "../models/index.js";
+import { FriendRequestModel } from "../models/index.js";
+import User from "../models/userModel.js";
+
 import { searchForFriends } from "../services/friendsService.js";
 
 // -------------------------- Send Request --------------------------
@@ -15,7 +17,7 @@ export const sendRequest = async (req, res, next) => {
     }
 
     // check if verified receiver exists
-    const receiver = await UserModel.findOne({
+    const receiver = await User.findOne({
       _id: receiver_id,
       verified: true,
     }).select("-password -passwordChangedAt");
@@ -156,10 +158,10 @@ export const acceptRejectRequest = async (req, res, next) => {
       });
     } else {
       // update friends list for both sender and receiver
-      await UserModel.findByIdAndUpdate(sender_id, {
+      await User.findByIdAndUpdate(sender_id, {
         $push: { friends: receiver_id },
       });
-      await UserModel.findByIdAndUpdate(receiver_id, {
+      await User.findByIdAndUpdate(receiver_id, {
         $push: { friends: sender_id },
       });
 
@@ -196,12 +198,12 @@ export const removeFriend = async (req, res, next) => {
     }
 
     // remove the friend from the user's friends list
-    await UserModel.findByIdAndUpdate(user._id, {
+    await User.findByIdAndUpdate(user._id, {
       $pull: { friends: friend_id },
     });
 
     // remove the user from the friend's friends list
-    await UserModel.findByIdAndUpdate(friend_id, {
+    await User.findByIdAndUpdate(friend_id, {
       $pull: { friends: user._id },
     });
 
@@ -221,7 +223,7 @@ export const getFriends = async (req, res, next) => {
     const user_id = req.user._id;
 
     // find the user and populate the friends list
-    const user = await UserModel.findById(user_id).populate(
+    const user = await User.findById(user_id).populate(
       "friends",
       "_id firstName lastName avatar activityStatus onlineStatus email"
     );
@@ -241,8 +243,10 @@ export const getOnlineFriends = async (req, res, next) => {
   try {
     const user_id = req.user._id;
 
+    console.log(user_id);
+
     // find the user and populate the friends list
-    const user = await UserModel.findById(user_id).populate(
+    const user = await User.findById(user_id).populate(
       "friends",
       "_id firstName lastName avatar onlineStatus"
     );
@@ -276,7 +280,7 @@ export const searchFriends = async (req, res, next) => {
     }
 
     // Populate friends data for the current user
-    const users = await UserModel.findById(current_user._id)
+    const users = await User.findById(current_user._id)
       .select("friends")
       .populate({
         path: "friends",
@@ -351,9 +355,9 @@ export const getSentRequests = async (req, res, next) => {
           _id: "$recipient._id",
           firstName: "$recipient.firstName",
           lastName: "$recipient.lastName",
+          username: "$recipient.username",
           avatar: "$recipient.avatar",
           activityStatus: "$recipient.activityStatus",
-          email: "$recipient.email",
           isSent: "$recipient.isSent",
           receiverId: "$recipient.receiver_id",
         },

@@ -3,7 +3,8 @@ import validator from "validator";
 
 import { deleteFile, uploadFiles } from "../services/fileUploadService.js";
 import { searchForUsers, validateAvatar } from "../services/userService.js";
-import { UserModel } from "../models/index.js";
+// import { UserModel } from "../models/index.js";
+import User from "../models/userModel.js";
 
 // -------------------------- Update Profile --------------------------
 export const updateProfile = async (req, res, next) => {
@@ -146,7 +147,7 @@ export const getUserData = async (req, res, next) => {
       throw createHttpError.BadRequest("Query required");
     }
 
-    const userData = await UserModel.findById(id).select(
+    const userData = await User.findById(id).select(
       "-password -passwordChangedAt -verified -onlineStatus -friends"
     );
 

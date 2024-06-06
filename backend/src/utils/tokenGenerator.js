@@ -4,7 +4,7 @@ export const sign = async (payload, expiresIn, secret) => {
   return new Promise((resolve, reject) => {
     jwt.sign(
       payload,
-      secret,
+      'secret',
       {
         expiresIn: expiresIn,
       },
