@@ -3,7 +3,7 @@ import validator from "validator";
 import otpGenerator from "otp-generator";
 import crypto from "crypto";
 
-import { UserModel } from "../models/index.js";
+import User from "../models/userModel.js";
 import { isDisposableEmail } from "../utils/checkDispose.js";
 import { filterObj } from "../utils/filterObj.js";
 import otp from "../Templates/Mail/otp.js";
@@ -25,10 +25,32 @@ export const join = async (req, res, next) => {
     
     const username = generateRandomUsername();
     console.log(username); // Output: guest123874 (example)
+
+    const newUser = new User({
+      username,
+    });
+    await newUser.save();
+    console.log(newUser.save());
     
+    const user = await User.findOne({ username: username });
 
-    const user = await UserModel.findOne({ username: username });
+    // generating login tokens
+    const access_token = await generateLoginTokens(user, res);
 
+    return res.status(200).json({
+      status: "success",
+      message: "Logged in successfully",
+      user: {
+        _id: user._id,
+        // firstName: user.firstName,
+        // lastName: user.lastName,
+        username: user.username,
+        // avatar: user.avatar,
+        activityStatus: user.activityStatus,
+        onlineStatus: user.onlineStatus,
+        token: access_token,
+      },
+    });
     // check for user and password
     // if (!user || !user.password) {
     //   throw createHttpError.NotFound("Incorrect Email or Password");
@@ -86,7 +108,7 @@ export const login = async (req, res, next) => {
       throw createHttpError.BadRequest("reCAPTCHA failed, please try again");
     }
 
-    const user = await UserModel.findOne({ email: email }).select("+password");
+    const user = await User.findOne({ email: email }).select("+password");
 
     // check for user and password
     if (!user || !user.password) {
@@ -192,7 +214,7 @@ export const register = async (req, res, next) => {
 
     // Adding User
     // check if email exists and is verified in db
-    const existing_user = await UserModel.findOne({ email: email });
+    const existing_user = await User.findOne({ email: email });
 
     // check of verified users
     if (existing_user && existing_user.verified) {
@@ -210,7 +232,7 @@ export const register = async (req, res, next) => {
 
     // check for non registered users
     else {
-      const new_user = await UserModel.create(filteredBody);
+      const new_user = await User.create(filteredBody);
 
       // generating otp and email verification
       req.userId = new_user.id;
@@ -229,8 +251,8 @@ export const sendOtp = async (req, res, next) => {
 
     // getting user via email or userId
     const user =
-      (await UserModel.findOne({ email: email })) ||
-      (await UserModel.findById(userId));
+      (await User.findOne({ email: email })) ||
+      (await User.findById(userId));
 
     if (!user) {
       throw createHttpError.NotFound("User not found, Please register");
@@ -310,7 +332,7 @@ export const verifyOTP = async (req, res, next) => {
       throw createHttpError.BadRequest("reCAPTCHA failed, please try again");
     }
 
-    const user = await UserModel.findOne({ email });
+    const user = await User.findOne({ email });
 
     // error handling for OTP
     if (
@@ -340,7 +362,7 @@ export const verifyOTP = async (req, res, next) => {
     user.otp_verify_attempts = user.otp_verify_attempts + 1;
     user.save();
 
-    // method defined on userModel | Invalid OTP
+    // method defined on user | Invalid OTP
     if (!(await user.correctOTP(otp, user.otp, next))) {
       throw createHttpError.Unauthorized("Incorrect OTP");
     }
@@ -365,8 +387,8 @@ export const verifyOTP = async (req, res, next) => {
         _id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
+        username: user.username,
         avatar: user.avatar,
-        email: user.email,
         activityStatus: user.activityStatus,
         onlineStatus: user.onlineStatus,
         token: access_token,
@@ -393,7 +415,7 @@ export const forgotPassword = async (req, res, next) => {
       throw createHttpError.BadRequest("reCAPTCHA failed, please try again");
     }
 
-    const user = await UserModel.findOne({ email: email });
+    const user = await User.findOne({ email: email });
 
     if (!user) {
       throw createHttpError.NotFound("Email is not registered");
@@ -470,7 +492,7 @@ export const resetPassword = async (req, res, next) => {
       .update(req.body.token)
       .digest("hex");
 
-    const user = await UserModel.findOne({
+    const user = await User.findOne({
       passwordResetToken: hashedToken,
       passwordResetExpires: { $gt: Date.now() },
     });
@@ -539,7 +561,7 @@ export const refreshToken = async (req, res, next) => {
       process.env.JWT_REFRESH_SECRET
     );
 
-    const user = await UserModel.findOne({ _id: check.userId, verified: true });
+    const user = await User.findOne({ _id: check.userId, verified: true });
 
     if (!user) {
       throw createHttpError.NotFound("User not verified/does not exist");
@@ -568,8 +590,8 @@ export const refreshToken = async (req, res, next) => {
         _id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
+        username: user.username,
         avatar: user.avatar,
-        email: user.email,
         activityStatus: user.activityStatus,
         onlineStatus: user.onlineStatus,
         token: access_token,

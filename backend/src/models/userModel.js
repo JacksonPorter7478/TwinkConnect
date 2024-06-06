@@ -1,20 +1,13 @@
 import mongoose from "mongoose";
-import validator from "validator";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 
 const userSchema = mongoose.Schema(
   {
-    firstName: { type: String, required: [true, "First Name is required"] },
-    lastName: { type: String, required: [true, "Last Name is required"] },
+    firstName: { type: String },
+    lastName: { type: String },
+    username: { type: String },
     avatar: { type: String },
-    email: {
-      type: String,
-      required: [true, "Email is required"],
-      unique: [true, "Email already exists"],
-      lowercase: true,
-      validate: [validator.isEmail, "Invalid Email"],
-    },
     activityStatus: {
       type: String,
       default: "Hey There! I ❤️ Using TwinkConnect 😸",
@@ -26,7 +19,7 @@ const userSchema = mongoose.Schema(
     },
 
     // Passwords schema
-    password: { type: String, required: [true, "Password is required"] },
+    password: { type: String },
     passwordChangedAt: { type: Date },
     passwordResetToken: { type: String },
     passwordResetExpires: { type: Date },
@@ -35,7 +28,7 @@ const userSchema = mongoose.Schema(
     // createdAt: { type: Date, default: Date.now() },
     // updatedAt: { type: Date },
 
-    verified: { type: Boolean, default: false },
+    verified: { type: Boolean, default: true },
 
     // OTP schema
     otp: { type: String },
@@ -45,12 +38,6 @@ const userSchema = mongoose.Schema(
 
     // Users friends
     friends: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
-
-    // Socials Added
-    socialsConnected: {
-      type: [String],
-      enum: ["google", "github", "linkedin"],
-    },
   },
   {
     timestamps: true,

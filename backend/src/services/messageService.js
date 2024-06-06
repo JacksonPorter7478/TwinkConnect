@@ -1,5 +1,6 @@
 import createHttpError from "http-errors";
-import { ConversationModel, MessageModel, UserModel } from "../models/index.js";
+import { ConversationModel, MessageModel } from "../models/index.js";
+import User from "../models/userModel.js";
 
 // validate friendship before sending message
 export const validateFriendship = async (sender_id, conversation) => {
@@ -10,8 +11,8 @@ export const validateFriendship = async (sender_id, conversation) => {
   );
 
   // getting sender and receiver
-  const senderUser = await UserModel.findById(sender_id);
-  const receiverUser = await UserModel.findById(receiver_id);
+  const senderUser = await User.findById(sender_id);
+  const receiverUser = await User.findById(receiver_id);
 
   // Check if users are friends
   if (

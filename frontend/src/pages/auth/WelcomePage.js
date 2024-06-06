@@ -1,9 +1,6 @@
-import { Stack, Typography, Box, Button, Divider, TextField } from "@mui/material";
+import { Stack, Typography, Box, Button, Divider } from "@mui/material";
 import { Link } from "react-router-dom";
-import * as Yup from "yup";
 import { useDispatch } from "react-redux";
-import { useForm, Controller } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { JoinUser } from "../../redux/slices/actions/authActions";
 // import FormProvider from "../../components/hook-form";
 

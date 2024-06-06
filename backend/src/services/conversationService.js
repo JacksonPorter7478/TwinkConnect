@@ -1,5 +1,6 @@
 import createHttpError from "http-errors";
-import { ConversationModel, UserModel } from "../models/index.js";
+import { ConversationModel } from "../models/index.js";
+import User from "../models/userModel.js";
 
 // find an existing direct conversation
 export const findConversation = async (sender_id, receiver_id) => {
@@ -31,7 +32,7 @@ export const findConversation = async (sender_id, receiver_id) => {
   }
 
   // populating messages model
-  convos = await UserModel.populate(convos, {
+  convos = await User.populate(convos, {
     path: "latestMessage.sender",
     select: "firstName lastName email avatar activityStatus",
   });
@@ -69,7 +70,7 @@ export const getUserConversations = async (user_id) => {
     .populate("latestMessage")
     .sort({ updatedAt: -1 })
     .then(async (results) => {
-      results = await UserModel.populate(results, {
+      results = await User.populate(results, {
         path: "latestMessage.sender",
         select: "firstName lastName avatar email activityStatus onlineStatus",
       });

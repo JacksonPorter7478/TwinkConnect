@@ -2,7 +2,8 @@ import createHttpError from "http-errors";
 import sizeOf from "image-size";
 import validator from "validator";
 
-import { FriendRequestModel, UserModel } from "../models/index.js";
+import { FriendRequestModel } from "../models/index.js";
+import User from "../models/userModel.js";
 
 // Validate avatar with allowed format, size and dimension
 export const validateAvatar = async (avatar) => {
@@ -65,7 +66,7 @@ export const searchForUsers = async (
   searchCriteria._id = { $nin: friends_ids };
 
   // Perform the search including requestSent field
-  users = await UserModel.aggregate([
+  users = await User.aggregate([
     { $match: searchCriteria },
     {
       $project: {

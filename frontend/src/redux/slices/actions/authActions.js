@@ -12,11 +12,11 @@ export const JoinUser = createAsyncThunk(
   "auth/join",
   async ({ ...formValues }, { rejectWithValue, dispatch }) => {
     try {
-      console.log({ ...formValues });
       const { data } = await axios.post("/auth/join", {
         ...formValues,
       });
 
+      console.log(data.user.username);
       // show snackbar
       dispatch(
         ShowSnackbar({
@@ -26,15 +26,16 @@ export const JoinUser = createAsyncThunk(
       );
 
       // if user is not verified
-      if (!data.user) {
-        dispatch(updateOtpEmail({ otpEmail: formValues.email }));
-        setTimeout(() => {
-          window.location.href = "/auth/verify";
-        }, 1000);
-      } else {
-        // update user data
+      // dispatch(updateOtpEmail({ otpEmail: data.user.username }));
+      // setTimeout(() => {
+      //   window.location.href = "/auth/verify";
+      // }, 1000);
+      // if (!data.user) {
+      //   console.log("otp email: ", formValues.email);
+      // } else {
+      //   // update user data
         dispatch(updateUser(data.user));
-      }
+      // }
 
       return data;
     } catch (error) {

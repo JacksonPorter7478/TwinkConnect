@@ -1,5 +1,6 @@
 import validator from "validator";
-import { UserModel } from "../models/index.js";
+// import { UserModel } from "../models/index.js";
+import User from "../models/userModel.js";
 
 // search friends
 export const searchForFriends = async (populatedFriends, keyword, page) => {
@@ -40,13 +41,13 @@ export const searchForFriends = async (populatedFriends, keyword, page) => {
   }
 
   // Perform the search
-  friends = await UserModel.find(searchCriteria)
+  friends = await User.find(searchCriteria)
     .select("_id firstName lastName email avatar activityStatus onlineStatus")
     .limit(pageSize)
     .skip(page * pageSize);
 
   // Get the total count for pagination
-  totalCount = await UserModel.countDocuments(searchCriteria);
+  totalCount = await User.countDocuments(searchCriteria);
 
   return { friends, totalCount };
 };
